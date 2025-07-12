@@ -1,0 +1,102 @@
+@import '@fontsource/pretendard/400.css';
+@import '@fontsource/pretendard/500.css';
+@import '@fontsource/pretendard/600.css';
+@import '@fontsource/pretendard/700.css';
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 기본 스타일 설정 */
+body {
+  margin: 0;
+  font-family: 'Pretendard', 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: 'liga' 1, 'kern' 1;
+  background: #ffffff;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+/* 한글 텍스트 최적화 */
+* {
+  font-family: 'Pretendard', 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* 커스텀 스타일 */
+.bg-gradient-firewood {
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 25%, #e2e8f0 50%, #f8fafc 100%);
+}
+
+/* 스크린샷 최적화 클래스 */
+.screenshot-optimized {
+  font-smooth: always;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+  text-rendering: optimizeLegibility !important;
+  font-family: 'Noto Sans KR', 'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif !important;
+  font-feature-settings: 'liga' 1, 'kern' 1 !important;
+  font-variant-ligatures: common-ligatures !important;
+  font-kerning: normal !important;
+  text-size-adjust: 100% !important;
+  -webkit-text-size-adjust: 100% !important;
+  -moz-text-size-adjust: 100% !important;
+}
+
+/* SVG 최적화 */
+.screenshot-optimized svg {
+  shape-rendering: geometricPrecision !important;
+  text-rendering: geometricPrecision !important;
+  color-rendering: optimizeQuality !important;
+  image-rendering: optimizeQuality !important;
+}
+
+/* 텍스트 요소 특별 최적화 */
+.screenshot-optimized span,
+.screenshot-optimized div,
+.screenshot-optimized p,
+.screenshot-optimized input {
+  font-synthesis: none !important;
+  text-decoration-skip-ink: none !important;
+  text-underline-position: under !important;
+}
+
+/* 고해상도 디스플레이용 최적화 */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .screenshot-optimized {
+    -webkit-font-smoothing: subpixel-antialiased !important;
+    transform: translateZ(0) !important;
+    backface-visibility: hidden !important;
+  }
+}
+
+/* 스크린샷에서 숨길 요소들 */
+.screenshot-hide,
+.interactive-input,
+[data-hide-in-screenshot],
+[class*="edit-mode"],
+[class*="floating"],
+button[title*="삭제"] {
+  /* 스크린샷 시에는 완전히 숨김 */
+}
+
+/* 인쇄/스크린샷 모드에서 숨김 */
+@media print {
+  .screenshot-hide,
+  .interactive-input,
+  [data-hide-in-screenshot],
+  [class*="edit"],
+  [class*="floating"],
+  button {
+    display: none !important;
+    visibility: hidden !important;
+  }
+} 
