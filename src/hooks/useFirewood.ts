@@ -57,6 +57,15 @@ export const useFirewood = () => {
     setMessages(prev => prev.filter(msg => msg.id !== id));
   }, []);
 
+  // 메시지 업데이트 (내용 및 시간 수정)
+  const updateMessage = useCallback((id: number, newText: string, newTime: string) => {
+    setMessages(prev => prev.map(msg => 
+      msg.id === id 
+        ? { ...msg, text: newText, time: newTime }
+        : msg
+    ));
+  }, []);
+
   // 직접 메시지 추가 (인터랙티브 입력용)
   const addDirectMessage = useCallback((text: string, isSender: boolean) => {
     const now = new Date();
@@ -138,19 +147,19 @@ export const useFirewood = () => {
               imgElement.addEventListener('load', onLoad);
               imgElement.addEventListener('error', onError);
               
-              // 타임아웃 설정 (5초)
+              // 타임아웃 설정 (10초로 증가)
               setTimeout(() => {
                 console.log('Image load timeout:', imgElement.src);
                 imgElement.removeEventListener('load', onLoad);
                 imgElement.removeEventListener('error', onError);
                 resolve();
-              }, 5000);
+              }, 10000);
             });
           })
         );
         
-        // 추가 렌더링 대기 시간 증가
-        await new Promise(resolve => setTimeout(resolve, 500));
+        // 추가 렌더링 대기 시간 증가 (1초)
+        await new Promise(resolve => setTimeout(resolve, 1000));
       }
 
       // html-to-image로 스크린샷 생성
@@ -270,6 +279,7 @@ export const useFirewood = () => {
     addMessage,
     addDirectMessage,
     deleteMessage,
+    updateMessage,
     resetToDefault,
     downloadScreenshot,
     updateSenderProfile,

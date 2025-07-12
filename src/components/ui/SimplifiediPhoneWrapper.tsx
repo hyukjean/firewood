@@ -82,7 +82,7 @@ const SimplifiediPhoneWrapper: React.FC<SimplifiediPhoneWrapperProps> = ({
     <div className="relative">
       {/* 스크린샷 최적화: 깔끔한 네모 구조 - 프레임 없음 */}
       <div
-        className="relative bg-white screenshot-target border border-gray-300"
+        className="relative bg-white screenshot-optimized border border-gray-300"
         data-screenshot-target="iphone-wrapper"
         id="iphone-screenshot-target"
         style={{
@@ -91,7 +91,7 @@ const SimplifiediPhoneWrapper: React.FC<SimplifiediPhoneWrapperProps> = ({
         }}
       >
         {/* 채팅 컨텐츠 - 전체 화면 사용 */}
-        <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute inset-0 overflow-hidden screenshot-optimized">
           {renderChatComponent()}
         </div>
       </div>

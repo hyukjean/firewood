@@ -44,6 +44,7 @@ code {
   image-rendering: auto;
   backface-visibility: hidden;
   transform: translateZ(0);
+  will-change: auto;
 }
 
 /* 스크린샷에서 이미지 최적화 */
@@ -52,6 +53,8 @@ code {
   backface-visibility: hidden;
   transform: translateZ(0);
   will-change: auto;
+  opacity: 1 !important;
+  transition: none !important;
 }
 
 /* 스크린샷에서 텍스트 최적화 */
@@ -68,6 +71,11 @@ code {
 /* 고해상도 디스플레이에서 스크린샷 최적화 */
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
   .screenshot-optimized {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
+  
+  .screenshot-optimized img {
     image-rendering: -webkit-optimize-contrast;
     image-rendering: crisp-edges;
   }

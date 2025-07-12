@@ -30,6 +30,7 @@ const App: React.FC = () => {
     setSelectedPlatform,
     addDirectMessage,
     deleteMessage,
+    updateMessage,
     resetToDefault,
     downloadScreenshot,
     updateSenderProfile,
@@ -161,7 +162,7 @@ const App: React.FC = () => {
         isMobile={isMobile}
         onSendMessage={undefined} // 인터랙티브 요소 제거
         onDeleteMessage={handleDeleteMessage}
-        onUpdateMessage={undefined} // updateMessage 제거
+        onUpdateMessage={updateMessage} // updateMessage 추가
         isEditMode={isEditMode}
         onRoleSwap={undefined} // 인터랙티브 요소 제거
         showDateBar={showDateBar}
