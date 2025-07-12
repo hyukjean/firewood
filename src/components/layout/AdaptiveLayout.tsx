@@ -217,15 +217,6 @@ const AdaptiveLayout: React.FC<AdaptiveLayoutProps> = ({
             {chatPreviewComponent}
           </motion.div>
         </div>
-
-        {/* 모바일 디버그 정보 (개발 시에만 표시) */}
-        {process.env.NODE_ENV === 'development' && (
-          <div className="fixed bottom-4 left-4 bg-black text-white text-xs p-2 rounded z-50">
-            <div>Control H: {dimensions.mobileControlHeight}px</div>
-            <div>Preview Top: {dimensions.mobilePreviewTop}px</div>
-            <div>Scale: {dimensions.iPhoneScale.toFixed(2)}</div>
-          </div>
-        )}
       </div>
     );
   }

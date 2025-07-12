@@ -42,7 +42,7 @@ const FloatingMessageControl: React.FC<FloatingMessageControlProps> = ({
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className={`fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-sm px-4 ${className}`}
+      className={`fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50 w-[calc(100vw-16px)] max-w-sm px-1 sm:px-4 ${className}`}
     >
       {/* ME/YOU 토글 버튼 및 역할 전환 */}
       <div className="flex justify-center mb-2">
@@ -84,10 +84,10 @@ const FloatingMessageControl: React.FC<FloatingMessageControlProps> = ({
 
       {/* 입력창 */}
       <div 
-        className="flex items-center gap-2 px-3 py-2 bg-white/95 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-200 w-full"
+        className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-2 bg-white/95 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-200 w-full"
       >
         <div 
-          className={`flex-1 rounded-[18px] px-4 py-2.5 flex items-center min-w-0 ${
+          className={`flex-1 rounded-[18px] px-2 sm:px-4 py-2.5 flex items-center min-w-0 ${
             platform === 'kakaotalk' 
               ? 'bg-gray-100' 
               : 'bg-gray-50'
@@ -106,12 +106,12 @@ const FloatingMessageControl: React.FC<FloatingMessageControlProps> = ({
         <button
           onClick={handleSend}
           disabled={!message.trim()}
-          className={`p-2.5 rounded-full transition-all flex-shrink-0 ${
+          className={`p-2 sm:p-2.5 rounded-full transition-all flex-shrink-0 ${
             message.trim()
               ? 'bg-orange-500 text-white hover:bg-orange-600 shadow-lg'
               : 'bg-gray-200 text-gray-400 cursor-not-allowed'
           }`}
-          style={{ minWidth: '40px', minHeight: '40px' }}
+          style={{ minWidth: '36px', minHeight: '36px' }}
         >
           <Send className="w-4 h-4" />
         </button>

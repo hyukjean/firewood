@@ -1,6 +1,5 @@
 import React, { useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { MessageSquare } from 'lucide-react';
 import { Toaster, toast } from 'react-hot-toast';
 import { useFirewood } from './hooks/useFirewood';
 
@@ -25,12 +24,12 @@ const App: React.FC = () => {
     senderProfile,
     receiverProfile,
     isMobile,
+    isDownloading,
     
     // 액션
     setSelectedPlatform,
     addDirectMessage,
     deleteMessage,
-    updateMessage,
     resetToDefault,
     downloadScreenshot,
     updateSenderProfile,
@@ -99,10 +98,6 @@ const App: React.FC = () => {
     }
   };
 
-  const handleProfileSettings = () => {
-    setIsProfileEditing(!isProfileEditing);
-  };
-
   // 컨트롤 패널 컴포넌트 선택
   const controlPanelComponent = isMobile ? (
     <MobileControlPanel
@@ -118,6 +113,7 @@ const App: React.FC = () => {
       onDownload={handleDownload}
       onEditMode={handleEditMode}
       isEditMode={isEditMode}
+      isDownloading={isDownloading}
       onSenderProfileUpdate={updateSenderProfile}
       onReceiverProfileUpdate={updateReceiverProfile}
       onDateChange={setCurrentDate}
@@ -137,6 +133,7 @@ const App: React.FC = () => {
       onDownload={handleDownload}
       onEditMode={handleEditMode}
       isEditMode={isEditMode}
+      isDownloading={isDownloading}
       onSenderProfileUpdate={updateSenderProfile}
       onReceiverProfileUpdate={updateReceiverProfile}
       onDateChange={setCurrentDate}
@@ -164,7 +161,7 @@ const App: React.FC = () => {
         isMobile={isMobile}
         onSendMessage={undefined} // 인터랙티브 요소 제거
         onDeleteMessage={handleDeleteMessage}
-        onUpdateMessage={updateMessage}
+        onUpdateMessage={undefined} // updateMessage 제거
         isEditMode={isEditMode}
         onRoleSwap={undefined} // 인터랙티브 요소 제거
         showDateBar={showDateBar}

@@ -28,10 +28,10 @@ const EnhancedInstagramChat: React.FC<EnhancedInstagramChatProps> = ({
   const messageGroups = groupMessagesForInstagram(messages);
 
   return (
-    <div className="h-full flex flex-col bg-white">
+    <div className="h-full flex flex-col bg-white screenshot-optimized">
       {/* 인스타그램 상단바 */}
       <div 
-        className="flex items-center px-4 py-3"
+        className="flex items-center px-4 py-3 screenshot-optimized"
         style={{ 
           borderBottom: `1px solid ${COLORS.INSTAGRAM.BORDER}`,
           minHeight: '60px',
@@ -40,9 +40,9 @@ const EnhancedInstagramChat: React.FC<EnhancedInstagramChatProps> = ({
       >
         <ChevronLeft className="w-7 h-7 mr-3" />
         
-        {/* 인스타그램 그라데이션 프로필 */}
+        {/* 인스타그램 그라데이션 프로필 - 중앙 정렬 */}
         <div 
-          className="w-9 h-9 rounded-full p-0.5 mr-3"
+          className="w-9 h-9 rounded-full p-0.5 mr-4 screenshot-optimized"
           style={{
             background: 'linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)'
           }}
@@ -52,26 +52,30 @@ const EnhancedInstagramChat: React.FC<EnhancedInstagramChatProps> = ({
               image={receiverImage} 
               name={receiverName} 
               size="sm"
-              className="w-full h-full"
+              className="w-full h-full screenshot-optimized"
             />
           </div>
         </div>
         
-        <div className="flex-1">
+        <div className="flex-1 flex flex-col justify-center">
           <div 
-            className="font-semibold text-base" 
+            className="font-semibold text-base screenshot-optimized" 
             style={{ 
               color: COLORS.INSTAGRAM.TEXT_DARK,
-              fontFamily: '"Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif'
+              fontFamily: '"Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif',
+              fontSize: '15px',
+              marginLeft: '-8px'
             }}
           >
             {receiverName}
           </div>
           <div 
-            className="text-sm" 
+            className="text-sm screenshot-optimized" 
             style={{ 
               color: COLORS.INSTAGRAM.TEXT_GRAY,
-              fontFamily: '"Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif'
+              fontFamily: '"Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif',
+              fontSize: '13px',
+              marginLeft: '-8px'
             }}
           >
             활동 중

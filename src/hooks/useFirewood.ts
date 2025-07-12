@@ -15,6 +15,7 @@ export const useFirewood = () => {
   const [senderMessage, setSenderMessage] = useState('');
   const [receiverMessage, setReceiverMessage] = useState('');
   const [isMobile, setIsMobile] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
 
   // 모바일 감지
   useEffect(() => {
@@ -81,169 +82,144 @@ export const useFirewood = () => {
     setReceiverMessage('');
   }, []);
 
-  // 스크린샷 다운로드 (html-to-image 라이브러리 사용으로 개선)
+  // 스크린샷 다운로드 (간단하고 안정적인 방법)
   const downloadScreenshot = useCallback(async (chatPreviewRef: React.RefObject<HTMLDivElement>) => {
     if (!chatPreviewRef.current) return;
     
+    setIsDownloading(true);
+    
     try {
-      // 채팅 컨텐츠 영역만 선택 (상단바 제외)
-      const chatContentElement = chatPreviewRef.current.querySelector('[style*="top:"]') as HTMLElement;
-      if (!chatContentElement) {
-        console.error('채팅 컨텐츠 영역을 찾을 수 없습니다.');
-        return;
-      }
-
-      // 모든 컨트롤과 편집 요소 숨기기
+      // 채팅 미리보기 전체를 캡처 대상으로 사용
+      const chatContentElement = chatPreviewRef.current as HTMLElement;
+      
+      // 편집 요소들만 숨기기
       const elementsToHide = [
         ...document.querySelectorAll('.interactive-input'),
         ...document.querySelectorAll('.inline-controls'),
         ...document.querySelectorAll('[data-hide-in-screenshot]'),
-        ...chatPreviewRef.current.querySelectorAll('button'),
-        ...document.querySelectorAll('[class*="edit"]'),
-        ...document.querySelectorAll('[class*="control"]')
+        ...document.querySelectorAll('.edit-mode')
       ];
       
       elementsToHide.forEach(el => {
         (el as HTMLElement).style.display = 'none';
       });
 
-      // 폰트 로딩 대기
-      await document.fonts.ready;
-
-      // 한글 폰트 강제 로딩
-      const koreanFonts = [
-        'Pretendard',
-        'Noto Sans KR',
-        'Apple SD Gothic Neo', 
-        'Malgun Gothic'
-      ];
-
-      await Promise.all(
-        koreanFonts.map(font => 
-          document.fonts.load(`400 16px "${font}"`)
-        )
-      );
-
-      // SVG를 Canvas로 변환하여 렌더링 개선
-      const svgElements = chatContentElement.querySelectorAll('svg');
-      const svgReplacements: { element: SVGElement; replacement: HTMLCanvasElement }[] = [];
-
-      for (const svg of svgElements) {
-        if (svg instanceof SVGElement) {
-          try {
-            // SVG를 데이터 URL로 변환
-            const svgData = new XMLSerializer().serializeToString(svg);
-            const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
-            const svgUrl = URL.createObjectURL(svgBlob);
-            
-            // 이미지로 로드
-            const img = new Image();
-            img.src = svgUrl;
-            await new Promise((resolve, reject) => {
-              img.onload = resolve;
-              img.onerror = reject;
+      // 이미지 로딩 완료 대기 - 더 강화된 로직
+      const imageElements = chatContentElement.querySelectorAll('img');
+      if (imageElements.length > 0) {
+        console.log(`Waiting for ${imageElements.length} images to load...`);
+        
+        await Promise.all(
+          Array.from(imageElements).map((img) => {
+            return new Promise<void>((resolve) => {
+              const imgElement = img as HTMLImageElement;
+              
+              // 이미 로드된 이미지인지 확인
+              if (imgElement.complete && imgElement.naturalWidth > 0 && imgElement.naturalHeight > 0) {
+                console.log('Image already loaded:', imgElement.src);
+                resolve();
+                return;
+              }
+              
+              const onLoad = () => {
+                console.log('Image loaded successfully:', imgElement.src);
+                imgElement.removeEventListener('load', onLoad);
+                imgElement.removeEventListener('error', onError);
+                resolve();
+              };
+              
+              const onError = () => {
+                console.log('Image failed to load:', imgElement.src);
+                imgElement.removeEventListener('load', onLoad);
+                imgElement.removeEventListener('error', onError);
+                resolve();
+              };
+              
+              imgElement.addEventListener('load', onLoad);
+              imgElement.addEventListener('error', onError);
+              
+              // 타임아웃 설정 (5초)
+              setTimeout(() => {
+                console.log('Image load timeout:', imgElement.src);
+                imgElement.removeEventListener('load', onLoad);
+                imgElement.removeEventListener('error', onError);
+                resolve();
+              }, 5000);
             });
-            
-            // Canvas로 변환
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d')!;
-            const rect = svg.getBoundingClientRect();
-            canvas.width = rect.width * 3; // 고해상도
-            canvas.height = rect.height * 3;
-            canvas.style.width = `${rect.width}px`;
-            canvas.style.height = `${rect.height}px`;
-            canvas.style.display = 'inline-block';
-            canvas.style.verticalAlign = 'middle';
-            
-            ctx.scale(3, 3);
-            ctx.drawImage(img, 0, 0, rect.width, rect.height);
-            
-            svgReplacements.push({ element: svg, replacement: canvas });
-            URL.revokeObjectURL(svgUrl);
-          } catch (e) {
-            console.warn('SVG 변환 실패:', e);
-          }
-        }
+          })
+        );
+        
+        // 추가 렌더링 대기 시간 증가
+        await new Promise(resolve => setTimeout(resolve, 500));
       }
 
-      // SVG를 Canvas로 임시 교체
-      svgReplacements.forEach(({ element, replacement }) => {
-        element.style.display = 'none';
-        element.parentNode?.insertBefore(replacement, element);
-      });
-
-             // html-to-image로 고품질 스크린샷 생성
-       const dataUrl = await htmlToImage.toPng(chatContentElement, {
-         quality: 1.0,
-         pixelRatio: 3,
-         backgroundColor: selectedPlatform === 'kakaotalk' ? '#ABC1D1' : '#ffffff',
-         style: {
-           fontFamily: "'Pretendard', 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', -apple-system, BlinkMacSystemFont, sans-serif"
-         } as any,
-         filter: (node) => {
-           // 편집 요소들 필터링
-           if (node.classList) {
-             return !node.classList.contains('interactive-input') &&
-                    !node.classList.contains('inline-controls') &&
-                    !node.classList.contains('edit-mode');
-           }
-           return true;
-         }
-       });
-
-      // Canvas 교체 원복
-      svgReplacements.forEach(({ element, replacement }) => {
-        replacement.remove();
-        element.style.display = '';
+      // html-to-image로 스크린샷 생성
+      console.log('Generating screenshot...');
+      const dataUrl = await htmlToImage.toPng(chatContentElement, {
+        quality: 1.0,
+        pixelRatio: 3,
+        backgroundColor: selectedPlatform === 'kakaotalk' ? '#ABC1D1' : '#ffffff',
+        style: {
+          fontFamily: "'Pretendard', 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', -apple-system, BlinkMacSystemFont, sans-serif"
+        } as any,
+        filter: (node) => {
+          // 편집 요소들만 필터링 (상단/하단 UI는 보존)
+          if (node.classList) {
+            return !node.classList.contains('interactive-input') &&
+                   !node.classList.contains('inline-controls') &&
+                   !node.classList.contains('edit-mode');
+          }
+          return true;
+        }
       });
 
       // 다운로드
       const link = document.createElement('a');
-      link.download = `firewood-${selectedPlatform}-chat-${new Date().toISOString().slice(0, 10)}-UHD.png`;
+      link.download = `firewood-${selectedPlatform}-chat-${new Date().toISOString().slice(0, 10)}.png`;
       link.href = dataUrl;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
 
-      // 숨겨진 요소들 다시 표시
-      elementsToHide.forEach(el => {
-        (el as HTMLElement).style.display = '';
-      });
+      console.log('Screenshot downloaded successfully');
       
     } catch (error) {
       console.error('스크린샷 생성 실패:', error);
       
-      // fallback: html2canvas 사용
+      // fallback: 더 간단한 방법
       try {
-        const chatContentElement = chatPreviewRef.current!.querySelector('[style*="top:"]') as HTMLElement;
-        const canvas = await html2canvas(chatContentElement, {
-          backgroundColor: selectedPlatform === 'kakaotalk' ? '#ABC1D1' : '#ffffff',
-          scale: 2,
-          useCORS: true,
-          allowTaint: false
+        const chatContentElement = chatPreviewRef.current as HTMLElement;
+        const image = await htmlToImage.toPng(chatContentElement, {
+          quality: 0.8,
+          pixelRatio: 2,
+          backgroundColor: selectedPlatform === 'kakaotalk' ? '#ABC1D1' : '#ffffff'
         });
 
-        const image = canvas.toDataURL('image/png', 1.0);
         const link = document.createElement('a');
         link.download = `firewood-${selectedPlatform}-chat-fallback.png`;
         link.href = image;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+        
+        console.log('Fallback screenshot downloaded');
       } catch (fallbackError) {
         console.error('Fallback 스크린샷도 실패:', fallbackError);
       }
-
+    } finally {
       // 숨겨진 요소들 복구
       const elementsToShow = [
         ...document.querySelectorAll('.interactive-input'),
         ...document.querySelectorAll('.inline-controls'),
-        ...document.querySelectorAll('[data-hide-in-screenshot]')
+        ...document.querySelectorAll('[data-hide-in-screenshot]'),
+        ...document.querySelectorAll('.edit-mode')
       ];
       
       elementsToShow.forEach(el => {
         (el as HTMLElement).style.display = '';
       });
+      
+      setIsDownloading(false);
     }
   }, [selectedPlatform]);
 
@@ -285,6 +261,7 @@ export const useFirewood = () => {
     senderMessage,
     receiverMessage,
     isMobile,
+    isDownloading,
     
     // 액션
     setSelectedPlatform,

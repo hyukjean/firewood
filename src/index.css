@@ -38,65 +38,55 @@ code {
 
 /* 스크린샷 최적화 클래스 */
 .screenshot-optimized {
-  font-smooth: always;
-  -webkit-font-smoothing: antialiased !important;
-  -moz-osx-font-smoothing: grayscale !important;
-  text-rendering: optimizeLegibility !important;
-  font-family: 'Noto Sans KR', 'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif !important;
-  font-feature-settings: 'liga' 1, 'kern' 1 !important;
-  font-variant-ligatures: common-ligatures !important;
-  font-kerning: normal !important;
-  text-size-adjust: 100% !important;
-  -webkit-text-size-adjust: 100% !important;
-  -moz-text-size-adjust: 100% !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  image-rendering: auto;
+  backface-visibility: hidden;
+  transform: translateZ(0);
 }
 
-/* SVG 최적화 */
-.screenshot-optimized svg {
-  shape-rendering: geometricPrecision !important;
-  text-rendering: geometricPrecision !important;
-  color-rendering: optimizeQuality !important;
-  image-rendering: optimizeQuality !important;
+/* 스크린샷에서 이미지 최적화 */
+.screenshot-optimized img {
+  image-rendering: auto;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+  will-change: auto;
 }
 
-/* 텍스트 요소 특별 최적화 */
+/* 스크린샷에서 텍스트 최적화 */
 .screenshot-optimized span,
 .screenshot-optimized div,
-.screenshot-optimized p,
-.screenshot-optimized input {
-  font-synthesis: none !important;
-  text-decoration-skip-ink: none !important;
-  text-underline-position: under !important;
+.screenshot-optimized p {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "kern" 1;
+  font-kerning: normal;
 }
 
-/* 고해상도 디스플레이용 최적화 */
+/* 고해상도 디스플레이에서 스크린샷 최적화 */
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
   .screenshot-optimized {
-    -webkit-font-smoothing: subpixel-antialiased !important;
-    transform: translateZ(0) !important;
-    backface-visibility: hidden !important;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
   }
 }
 
 /* 스크린샷에서 숨길 요소들 */
 .screenshot-hide,
 .interactive-input,
-[data-hide-in-screenshot],
-[class*="edit-mode"],
-[class*="floating"],
-button[title*="삭제"] {
-  /* 스크린샷 시에는 완전히 숨김 */
+.inline-controls,
+.edit-mode {
+  display: none !important;
 }
 
-/* 인쇄/스크린샷 모드에서 숨김 */
+/* 인쇄 시 숨길 요소들 */
 @media print {
   .screenshot-hide,
   .interactive-input,
-  [data-hide-in-screenshot],
-  [class*="edit"],
-  [class*="floating"],
-  button {
+  .inline-controls,
+  .edit-mode {
     display: none !important;
-    visibility: hidden !important;
   }
 } 

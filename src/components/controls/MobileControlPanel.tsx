@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Download, Edit3, Calendar, Users, ChevronDown, ChevronUp } from 'lucide-react';
+import { Download, Edit3, Calendar, Users, ChevronDown, ChevronUp, Loader2 } from 'lucide-react';
 import { Platform, DeviceSettings, Profile } from '../../types';
 import PlatformSelectorTop from './PlatformSelectorTop';
 import InlineProfileEditor from './InlineProfileEditor';
@@ -19,6 +19,7 @@ interface MobileControlPanelProps {
   onDownload: () => void;
   onEditMode: () => void;
   isEditMode: boolean;
+  isDownloading: boolean;
   onSenderProfileUpdate: (updates: Partial<Profile>) => void;
   onReceiverProfileUpdate: (updates: Partial<Profile>) => void;
   onDateChange: (date: string) => void;
@@ -38,6 +39,7 @@ const MobileControlPanel: React.FC<MobileControlPanelProps> = ({
   onDownload,
   onEditMode,
   isEditMode,
+  isDownloading,
   onSenderProfileUpdate,
   onReceiverProfileUpdate,
   onDateChange,
@@ -160,19 +162,35 @@ const MobileControlPanel: React.FC<MobileControlPanelProps> = ({
           
           {/* 다운로드 버튼 */}
           <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            whileHover={{ scale: isDownloading ? 1 : 1.05 }}
+            whileTap={{ scale: isDownloading ? 1 : 0.95 }}
             onClick={onDownload}
-            className="flex flex-col items-center gap-0.5 bg-green-500 text-white p-1.5 rounded-lg transition-all"
-            style={{
+            disabled={isDownloading}
+            className={`flex flex-col items-center gap-0.5 p-1.5 rounded-lg transition-all ${
+              isDownloading 
+                ? 'bg-gray-400 text-white cursor-not-allowed' 
+                : 'bg-green-500 text-white hover:bg-green-600'
+            }`}
+            style={isDownloading ? {
+              boxShadow: `
+                3px 3px 6px #9ca3af80,
+                -3px -3px 6px #d1d5db80
+              `
+            } : {
               boxShadow: `
                 3px 3px 6px #16a34a80,
                 -3px -3px 6px #22c55e80
               `
             }}
           >
-            <Download className="w-2.5 h-2.5" />
-            <span className="text-[10px] font-medium">저장</span>
+            {isDownloading ? (
+              <Loader2 className="w-2.5 h-2.5 animate-spin" />
+            ) : (
+              <Download className="w-2.5 h-2.5" />
+            )}
+            <span className="text-[10px] font-medium">
+              {isDownloading ? "다운로드 중..." : "저장"}
+            </span>
           </motion.button>
         </div>
       </motion.div>

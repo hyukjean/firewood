@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Download, Edit3, Calendar } from 'lucide-react';
+import { Download, Edit3, Calendar, Loader2 } from 'lucide-react';
 import { Platform, DeviceSettings, Profile } from '../../types';
 import PlatformSelectorTop from './PlatformSelectorTop';
 import InlineProfileEditor from './InlineProfileEditor';
@@ -19,6 +19,7 @@ interface DesktopControlPanelProps {
   onDownload: () => void;
   onEditMode: () => void;
   isEditMode: boolean;
+  isDownloading: boolean;
   onSenderProfileUpdate: (updates: Partial<Profile>) => void;
   onReceiverProfileUpdate: (updates: Partial<Profile>) => void;
   onDateChange: (date: string) => void;
@@ -38,6 +39,7 @@ const DesktopControlPanel: React.FC<DesktopControlPanelProps> = ({
   onDownload,
   onEditMode,
   isEditMode,
+  isDownloading,
   onSenderProfileUpdate,
   onReceiverProfileUpdate,
   onDateChange,
@@ -134,19 +136,35 @@ const DesktopControlPanel: React.FC<DesktopControlPanelProps> = ({
           
           {/* 다운로드 버튼 */}
           <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            whileHover={{ scale: isDownloading ? 1 : 1.05 }}
+            whileTap={{ scale: isDownloading ? 1 : 0.95 }}
             onClick={onDownload}
-            className="flex flex-col items-center gap-2 bg-green-500 text-white p-4 rounded-2xl transition-all col-span-full"
-            style={{
+            disabled={isDownloading}
+            className={`flex flex-col items-center gap-2 p-4 rounded-2xl transition-all col-span-full ${
+              isDownloading 
+                ? 'bg-gray-400 text-white cursor-not-allowed' 
+                : 'bg-green-500 text-white hover:bg-green-600'
+            }`}
+            style={isDownloading ? {
+              boxShadow: `
+                8px 8px 16px #9ca3af80,
+                -8px -8px 16px #d1d5db80
+              `
+            } : {
               boxShadow: `
                 8px 8px 16px #16a34a80,
                 -8px -8px 16px #22c55e80
               `
             }}
           >
-            <Download className="w-5 h-5" />
-            <span className="text-xs font-medium">스크린샷 다운로드</span>
+            {isDownloading ? (
+              <Loader2 className="w-5 h-5 animate-spin" />
+            ) : (
+              <Download className="w-5 h-5" />
+            )}
+            <span className="text-xs font-medium">
+              {isDownloading ? "다운로드 중..." : "스크린샷 다운로드"}
+            </span>
           </motion.button>
         </div>
       </motion.div>

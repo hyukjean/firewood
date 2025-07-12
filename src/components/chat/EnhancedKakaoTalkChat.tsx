@@ -47,43 +47,21 @@ const EnhancedKakaoTalkChat: React.FC<EnhancedKakaoTalkChatProps> = ({
   };
 
   return (
-    <div 
-      className="h-full flex flex-col screenshot-optimized" 
-      style={{ 
-        backgroundColor: COLORS.KAKAO.BG,
-        fontFamily: "'Noto Sans KR', 'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif",
-        WebkitFontSmoothing: 'antialiased',
-        MozOsxFontSmoothing: 'grayscale',
-        textRendering: 'optimizeLegibility'
-      }}
-    >
-      {/* 카카오톡 상단바 - 배경색 통일 */}
+    <div className="h-full flex flex-col bg-[#ABC1D1] screenshot-optimized">
+      {/* 카카오톡 상단바 */}
       <div 
-        className="flex items-center px-4 py-0 border-b screenshot-optimized"
+        className="flex items-center px-4 py-3 bg-[#ABC1D1] screenshot-optimized"
         style={{ 
-          backgroundColor: COLORS.KAKAO.BG, // 전체 배경과 동일한 색상
-          minHeight: '56px',
-          borderBottomColor: COLORS.KAKAO.BG, // 구분선도 배경색과 동일하게
-          borderBottomWidth: '0.5px',
-          // 텍스트 수직 정렬을 위한 스타일
-          display: 'flex',
-          alignItems: 'center',
-          fontFamily: "'Noto Sans KR', 'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif"
+          borderBottom: '1px solid #8E8E93',
+          minHeight: '60px',
+          fontFamily: '"Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif'
         }}
       >
         <ChevronLeft className="w-6 h-6 mr-2" style={{ color: '#2c2c2c' }} />
         <span 
-          className="flex-1 text-black font-medium screenshot-optimized"
+          className="flex-1 text-black font-semibold text-[17px] screenshot-optimized" 
           style={{ 
-            fontSize: '16px',
-            lineHeight: '56px', // 헤더 높이와 동일하게 설정
-            display: 'flex',
-            alignItems: 'center',
-            height: '56px',
-            fontFamily: "'Noto Sans KR', 'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif",
-            fontWeight: '500',
-            WebkitFontSmoothing: 'antialiased',
-            MozOsxFontSmoothing: 'grayscale'
+            fontFamily: '"Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif'
           }}
         >
           {receiverName}

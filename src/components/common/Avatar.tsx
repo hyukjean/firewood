@@ -21,7 +21,25 @@ const Avatar: React.FC<AvatarProps> = React.memo(({
         <img 
           src={image} 
           alt={name} 
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover screenshot-optimized"
+          crossOrigin="anonymous"
+          loading="eager"
+          decoding="sync"
+          style={{
+            // 이미지가 즉시 표시되도록 opacity 제거
+            imageRendering: 'auto',
+            backfaceVisibility: 'hidden',
+            transform: 'translateZ(0)' // 하드웨어 가속 활성화
+          }}
+          onError={(e) => {
+            // 이미지 로딩 실패 시 기본 아바타로 fallback
+            const img = e.target as HTMLImageElement;
+            img.style.display = 'none';
+            const parent = img.parentElement;
+            if (parent) {
+              parent.innerHTML = `<div class="w-full h-full flex items-center justify-center bg-gray-200 font-semibold text-gray-600">${name.charAt(0).toUpperCase()}</div>`;
+            }
+          }}
         />
       </div>
     );
